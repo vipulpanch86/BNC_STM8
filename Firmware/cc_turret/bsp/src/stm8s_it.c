@@ -327,7 +327,7 @@ INTERRUPT_HANDLER(UART1_TX_IRQHandler, 17)
   * @param  None
   * @retval None
   */
-INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
+@svlreg INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
 {
   extern void TURR_ByteRxCallBack(uint8_t readByte);
 
