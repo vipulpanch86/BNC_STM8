@@ -64,10 +64,10 @@ String.100.0=STM8S207R8
 
 [Root.Config.0.Settings.3]
 String.2.0=Compiling $(InputFile)...
-String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=0 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=1 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
 String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
 String.5.0=$(IntermPath)$(InputName).ls
-String.6.0=2017,9,27,19,43,45
+String.6.0=2017,11,9,19,8,0
 
 [Root.Config.0.Settings.4]
 String.2.0=Assembling $(InputFile)...
@@ -139,10 +139,10 @@ Int.1=0
 
 [Root.app.Config.0.Settings.1]
 String.2.0=Compiling $(InputFile)...
-String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=0 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=1 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
 String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
 String.5.0=$(IntermPath)$(InputName).ls
-String.6.0=2017,9,27,19,43,45
+String.6.0=2017,11,9,19,8,0
 
 [Root.app.Config.0.Settings.2]
 String.2.0=Assembling $(InputFile)...
@@ -218,10 +218,10 @@ Int.1=0
 
 [Root.bsp.Config.0.Settings.1]
 String.2.0=Compiling $(InputFile)...
-String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=0 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=1 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
 String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
 String.5.0=$(IntermPath)$(InputName).ls
-String.6.0=2017,9,27,19,43,45
+String.6.0=2017,11,9,19,8,0
 
 [Root.bsp.Config.0.Settings.2]
 String.2.0=Assembling $(InputFile)...
@@ -327,10 +327,10 @@ Int.1=0
 
 [Root.stm8s.Config.0.Settings.1]
 String.2.0=Compiling $(InputFile)...
-String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=0 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=1 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
 String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
 String.5.0=$(IntermPath)$(InputName).ls
-String.6.0=2017,9,27,19,43,45
+String.6.0=2017,11,9,19,8,0
 
 [Root.stm8s.Config.0.Settings.2]
 String.2.0=Assembling $(InputFile)...
@@ -570,10 +570,10 @@ Int.1=0
 
 [Root.ui.Config.0.Settings.1]
 String.2.0=Compiling $(InputFile)...
-String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=0 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.3.0=cxstm8 +warn +modsl0 -customOpt +fast -customC-pp -customLst-l -dSTM8S207 -dHW_VARIANT=0 -dMOTHER_BOARD_TYPE=1 -i..\common\ui\inc -i..\common\stm8s_stdperiph_driver\inc -ibsp\inc -iui\inc -iapp\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
 String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
 String.5.0=$(IntermPath)$(InputName).ls
-String.6.0=2017,9,27,19,43,45
+String.6.0=2017,11,9,19,8,0
 
 [Root.ui.Config.0.Settings.2]
 String.2.0=Assembling $(InputFile)...

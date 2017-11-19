@@ -23,6 +23,8 @@
 
 /* Private define ------------------------------------------------------------*/
 #define BSP_SW_VERSION      200
+#define BSP_MB_SMALL        1
+#define BSP_MB_BIG          0
 
 /* Board I/Os configuration */
 #define DISP_MS0_PORT (GPIOA)
@@ -83,11 +85,23 @@
 #define DISP_LE0_PORT (GPIOE)
 #define DISP_LE0_PIN  (GPIO_PIN_0)
 
+#if (MOTHER_BOARD_TYPE == BSP_MB_BIG)
+
 #define DISP_LOE_PORT (GPIOE)
 #define DISP_LOE_PIN  (GPIO_PIN_1)
 
 #define KEY_SCA0_PORT (GPIOE)
 #define KEY_SCA0_PIN  (GPIO_PIN_2)
+
+#else
+
+#define DISP_LOE_PORT (GPIOG)
+#define DISP_LOE_PIN  (GPIO_PIN_6)
+
+#define KEY_SCA0_PORT (GPIOG)
+#define KEY_SCA0_PIN  (GPIO_PIN_7)
+
+#endif
 
 #define KEY_SCA1_PORT (GPIOE)
 #define KEY_SCA1_PIN  (GPIO_PIN_3)
@@ -154,33 +168,69 @@
   * @param  state - True (Enable) / False (Disable)
   * @retval None
   */
+#if (MOTHER_BOARD_TYPE == BSP_MB_BIG)
+
 #define BSP_H_MotorEnable(state) { \
     (state == TRUE) ? \
     (TRIACD_PORT->ODR &= (uint8_t)~TRIACD_PIN) : \
     (TRIACD_PORT->ODR |= (uint8_t)TRIACD_PIN); \
   }
 
+#else
+
+#define BSP_H_MotorEnable(state) { \
+    (state == FALSE) ? \
+    (TRIACD_PORT->ODR &= (uint8_t)~TRIACD_PIN) : \
+    (TRIACD_PORT->ODR |= (uint8_t)TRIACD_PIN); \
+  }
+
+#endif
+
 /**
   * @brief  S-Motor Enable / Disable
   * @param  state - True (Enable) / False (Disable)
   * @retval None
   */
+#if (MOTHER_BOARD_TYPE == BSP_MB_BIG)
+
 #define BSP_S_MotorEnable(state) { \
     (state == TRUE) ? \
     (TRIACC_PORT->ODR &= (uint8_t)~TRIACC_PIN) : \
     (TRIACC_PORT->ODR |= (uint8_t)TRIACC_PIN); \
   }
 
+#else
+
+#define BSP_S_MotorEnable(state) { \
+    (state == FALSE) ? \
+    (TRIACC_PORT->ODR &= (uint8_t)~TRIACC_PIN) : \
+    (TRIACC_PORT->ODR |= (uint8_t)TRIACC_PIN); \
+  }
+
+#endif
+
 /**
   * @brief  V-Pump Enable / Disable
   * @param  state - True (Enable) / False (Disable)
   * @retval None
   */
+#if (MOTHER_BOARD_TYPE == BSP_MB_BIG)
+
 #define BSP_V_PumpEnable(state) { \
     (state == TRUE) ? \
     (TRIACB_PORT->ODR &= (uint8_t)~TRIACB_PIN) : \
     (TRIACB_PORT->ODR |= (uint8_t)TRIACB_PIN); \
   }
+
+#else
+
+#define BSP_V_PumpEnable(state) { \
+    (state == FALSE) ? \
+    (TRIACB_PORT->ODR &= (uint8_t)~TRIACB_PIN) : \
+    (TRIACB_PORT->ODR |= (uint8_t)TRIACB_PIN); \
+  }
+
+#endif
 
 /**
   * @brief  B-Coil Enable / Disable

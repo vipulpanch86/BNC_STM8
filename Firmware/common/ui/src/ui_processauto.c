@@ -283,6 +283,8 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
       {
         UI_MSG_T msg = {0, UIMSG_INIT};
         pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_START_B_COIL];
+				
+        AutoAccumulateCount -= (AutoAccumulateCount % 100); 
 
         UI_SetRefreshMsg(0);
 
