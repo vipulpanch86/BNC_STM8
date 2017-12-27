@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui.c
-  * @author  CG Global R&D MCoEx - D&A Team
-  * @version V1.0.0
-  * @date    15-July-2014
+  * @author  Vipul Panchal
   * @brief   User Interface Source File.
   *          Implements Functions to interface a input device such as
   *          keyboard to a output device such as display
@@ -13,20 +11,6 @@
   * UI_MSG_T structure.
   * UI interfaces the hardware display in the file ui_display.c &
   * Keypad in ui_keypad.c
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2014 Crompton Greaves</center></h2>
-  *
-  * This material is considered a trade secret by Crompton Greaves Limited.
-  * Unauthorized access prohibited
-  * This software is provided "as is" without warranty or merchantability or
-  * fitness for a particular purpose.
-  * Further, Crompton Greaves doesn't warrant/guarantee, or make any
-  * representations regarding the use, or the result of the use, of the
-  * software interms of correctness, accuracy, readability or otherwise.
-  *
   ******************************************************************************
   */
 
@@ -41,9 +25,6 @@
 /** @addtogroup UI_Core_Private_Includes
   * @{
   */
-#include <stdlib.h>
-#include <string.h>
-
 #include "bsp.h"
 
 #include "ui.h"
@@ -251,7 +232,7 @@ void UI_ClearAllMessage(void)
 
   RefreshMsgInterval = 0;
   BkupRefreshTimer = 0;
-	
+  
   /* Flush Message stack */
   for(cnt = 0; cnt < MSG_STACK_SZ; cnt++)
   {
@@ -366,7 +347,7 @@ void UI_Exec(void)
     uint32_t sysTime = BSP_GetSysTime();
 
     /* Check if the Refresh Interval is Reached */
-    if(absolute((int32_t)(sysTime - BkupRefreshTimer)) >= RefreshMsgInterval)
+    if(labs((int32_t)(sysTime - BkupRefreshTimer)) >= RefreshMsgInterval)
     {
       UI_MSG_T rfshMsg = {0, UIMSG_REFRESH};
 

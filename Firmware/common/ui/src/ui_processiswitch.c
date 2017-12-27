@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processiswitch.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui input switch process function
   ******************************************************************************
   */
@@ -46,11 +44,11 @@ uint8_t UI_ProcessISwitch(void *pParam, UI_MSG_T *pMsg)
 
   if(iSwitchStatus == TRUE)
   {
-    DISP_LowerPutStr("H", DISP_LOWER_MAX_NB - 1);
+    DISP_LowerPutStr("H", (uint8_t)(DISP_LOWER_MAX_NB - 1));
   }
   else
   {
-    DISP_LowerPutStr("L", DISP_LOWER_MAX_NB - 1);
+    DISP_LowerPutStr("L", (uint8_t)(DISP_LOWER_MAX_NB - 1));
   }
 
   return UI_RC_CONTINUE;

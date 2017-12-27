@@ -1,25 +1,9 @@
 /**
   ******************************************************************************
-  * @file    ui_key.c
-  * @author  CG Global R&D MCoEx - D&A Team
-  * @version V1.0.0
-  * @date    13-November-2014
-  * @brief   User Interface Keypad Interface Source File.
-  *           + Implements the keypad callback to map to UI keypad messages
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2014 Crompton Greaves</center></h2>
-  *
-  * This material is considered a trade secret by Crompton Greaves Limited.
-  * Unauthorized access prohibited
-  * This software is provided "as is" without warranty or merchantability or
-  * fitness for a particular purpose.
-  * Further, Crompton Greaves doesn't warrant/guarantee, or make any
-  * representations regarding the use, or the result of the use, of the
-  * software interms of correctness, accuracy, readability or otherwise.
-  *
+  * @file    ui_callback.c
+  * @author  Vipul Panchal
+  * @brief   User Interface Callback Source File.
+  *           + Implements the callback to map events from bsp to UI messages
   ******************************************************************************
   */
 
@@ -27,11 +11,11 @@
   * @{
   */
 
-/** @addtogroup UI_Key
+/** @addtogroup UI_Callback
   * @{
   */
 
-/** @addtogroup UI_Key_Private_Includes
+/** @addtogroup UI_Callback_Private_Includes
   * @{
   */
 #include "bsp.h"
@@ -39,6 +23,7 @@
 #include "ui.h"
 
 #define KEY_PRESS_BUZZ_TIME    100
+#define SW_PRESS_BUZZ_TIME     100
 /**
   * @}
   */

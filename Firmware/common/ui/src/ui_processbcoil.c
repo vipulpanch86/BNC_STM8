@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processbcoil.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui batch coil process function
   ******************************************************************************
   */
@@ -36,7 +34,6 @@ uint8_t UI_ProcessBCoil(void *pParam, UI_MSG_T *pMsg)
       BSP_B_CoilEnable(FALSE);
       return UI_RC_FINISH;
     }
-    break;
 
     case UIMSG_KEY_RST:
       if((uint8_t)pMsg->param == UI_KEY_PRESS)

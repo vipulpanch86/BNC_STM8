@@ -1,16 +1,12 @@
 /**
   ******************************************************************************
   * @file    ui_processhome.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui home process function
   ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include <string.h>
-
 #include "bsp.h"
 #include "ui.h"
 
@@ -105,8 +101,8 @@ static UI_PROC_PF pfProcHome = NULL;
 static uint8_t SwitchHomeSubProcess(void *param, UI_MSG_T *pMsg)
 {
   UI_ClearAllMessage();
-	
-  return (pfProcHome(param, pMsg));	
+  
+  return (pfProcHome(param, pMsg));  
 }
 
 /**
@@ -150,6 +146,7 @@ static void HomeDispCounter(void)
   uint8_t flagUVDetect = UV_GetDetectFlag();
   uint8_t cntMode = COUNTER_GetMode();
   uint32_t sensorCounter = SENSOR_GetCount();
+  uint32_t dispUppMaxResln = DISP_UPPER_MAX_VALUE;
 
   REG_GetValue(&valueCounter, REG_ID_VALUE_COUNTER);
   REG_GetValue(&accSensorCount, REG_ID_ACC_CTR_LIST[cntMode]);
@@ -223,27 +220,28 @@ static void HomeDispCounter(void)
   }
 
   /* Top Display */
-  if(TopDispValue > (MAX_LCD_RESLN / 10))
+  /* Division by 10 for First Character of Mode */
+  if(TopDispValue > (dispUppMaxResln / 10))
   {
     /* Toggle Lacs & Thousand */
     if(flagSensorEnable)
     {
-      if(TopDispValue > MAX_LCD_RESLN)
+      if(TopDispValue > dispUppMaxResln)
       {
-        sprintf(&strTopDisp[0], "%lu%c", TopDispValue / (MAX_LCD_RESLN + 1), LCD_WRAP_CHAR);
+        sprintf((char *)&strTopDisp[0], "%lu%c", TopDispValue / (dispUppMaxResln + 1), DISP_WRAP_CHAR);
       }
       else
       {
-        sprintf(&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
+        sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
       }
     }
     else
     {
-      if(TopDispValue > MAX_LCD_RESLN)
+      if(TopDispValue > dispUppMaxResln)
       {
         uint32_t SysTimer = BSP_GetSysTime();
 
-        if(absolute((int32_t)(SysTimer - BkupSysTimer)) >= 1000)
+        if(labs((int32_t)(SysTimer - BkupSysTimer)) >= 1000)
         {
           BkupSysTimer = SysTimer;
           lacsDispEn = (uint8_t)((lacsDispEn == TRUE) ? FALSE : TRUE);
@@ -251,37 +249,37 @@ static void HomeDispCounter(void)
 
         if(lacsDispEn == TRUE)
         {
-          sprintf(&strTopDisp[0], "%lu%c", TopDispValue / (MAX_LCD_RESLN + 1), LCD_WRAP_CHAR);
+          sprintf((char *)&strTopDisp[0], "%lu%c", TopDispValue / (dispUppMaxResln + 1), DISP_WRAP_CHAR);
         }
         else
         {
-          sprintf(&strTopDisp[0], DISP_UPPER_STR_FORMAT,
-                  TopDispValue % (MAX_LCD_RESLN + 1));
+          sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT,
+                  TopDispValue % (dispUppMaxResln + 1));
         }
       }
       else
       {
-        sprintf(&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
+        sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
       }
     }
   }
   else
   {
-    sprintf(&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
+    sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
     strTopDisp[0] = (char)charCountMode[cntMode];
   }
 
   /* Bottom Display */
   if(BotDispValue > 0)
   {
-    sprintf(&strBotDisp[0], DISP_LOWER_STR_FORMAT, BotDispValue);
+    sprintf((char *)&strBotDisp[0], DISP_LOWER_STR_FORMAT, BotDispValue);
   }
 
-  DISP_UpperPutStr(&strTopDisp[0], 0);
-  DISP_LowerPutStr(&strBotDisp[0], 0);
+  DISP_UpperPutStr((char *)&strTopDisp[0], 0);
+  DISP_LowerPutStr((char *)&strBotDisp[0], 0);
 
-  DISP_TurrPutStr(&strTopDisp[DISP_UPPER_MAX_NB - DISP_TURRET_MAX_NB], 0);
-  TURR_PutVal((uint16_t)(TopDispValue % 10000));
+  DISP_TurrPutStr((char *)&strTopDisp[DISP_UPPER_MAX_NB - DISP_TURRET_MAX_NB], 0);
+  TURR_PutVal((uint16_t)(TopDispValue % (DISP_TURRET_MAX_VALUE + 1)));
 }
 
 /**
@@ -295,12 +293,10 @@ static uint8_t ProcHomeTestKeypad(void *param, UI_MSG_T *pMsg)
 #define KEY_CHECK_REFRESH    500
 #define BEEP_ON_TIME         200
 
-  static uint8_t BeepOn = FALSE;
 
   switch(pMsg->message)
   {
     case UIMSG_INIT:
-      BeepOn = FALSE;
       UI_SetRefreshMsg(KEY_CHECK_REFRESH * 2);
       break;
 
@@ -565,7 +561,7 @@ static uint8_t ProcHomeWelcomeMsg(void *param, UI_MSG_T *pMsg)
 #define WELCOME_MSG_INTERVAL   (250)
 
   static uint8_t msgStartCharNo, msgStartDispNo, msgNbDispChar;
-  static const char *pStrWelcomeMsg = (char *)FLASH_DATA_START_PHYSICAL_ADDRESS;
+  static const char *pStrWelcomeMsg = (char *)WELCOME_MSG_ADDR;
   uint32_t powerOnDone = FALSE;
   REG_GetValue(&powerOnDone, REG_ID_POWER_ON_FLAG);
 
@@ -578,13 +574,13 @@ static uint8_t ProcHomeWelcomeMsg(void *param, UI_MSG_T *pMsg)
       /* only the First Character is to be displayed on start*/
       msgStartCharNo = 0;
       msgStartDispNo = (uint8_t)(DISP_UPPER_MAX_NB - 1);
-      msgNbDispChar = DISP_UPPER_MAX_NB - msgStartDispNo;
+      msgNbDispChar = (uint8_t)(DISP_UPPER_MAX_NB - msgStartDispNo);
 
       DISP_ClearAll();
 
       if(msgLen > 0)
       {
-        DISP_UpperPutStr(&pStrWelcomeMsg[msgStartCharNo], msgStartDispNo);
+        DISP_UpperPutStr((char *)&pStrWelcomeMsg[msgStartCharNo], msgStartDispNo);
       }
 
       UI_SetRefreshMsg(WELCOME_MSG_INTERVAL);
@@ -610,7 +606,7 @@ static uint8_t ProcHomeWelcomeMsg(void *param, UI_MSG_T *pMsg)
         }
 
         DISP_ClearAll();
-        DISP_UpperPutStr(&pStrWelcomeMsg[msgStartCharNo], msgStartDispNo);
+        DISP_UpperPutStr((char *)&pStrWelcomeMsg[msgStartCharNo], msgStartDispNo);
         UI_SetRefreshMsg(WELCOME_MSG_INTERVAL);
       }
       else
@@ -700,7 +696,6 @@ static uint8_t ProcHomeTestStart(void *param, UI_MSG_T *pMsg)
 
       return(SwitchHomeSubProcess(param, &msg));
     }
-    break;
 
     case UIMSG_KEY_SWH:
     {
@@ -765,7 +760,6 @@ static uint8_t ProcHomeTestEnd(void *param, UI_MSG_T *pMsg)
 
       return(SwitchHomeSubProcess(param, &msg));
     }
-    break;
 
     default:
       break;
@@ -1478,6 +1472,7 @@ static uint8_t ProcHomeStartHMotor(void *param, UI_MSG_T *pMsg)
 
       if(flagUVDetect == TRUE)
       {
+        UV_SetAmbientValue(BSP_GetADC());
         BSP_UV_DetectEnable(TRUE);
       }
 
@@ -1562,7 +1557,6 @@ static uint8_t ProcHomeStartHMotor(void *param, UI_MSG_T *pMsg)
 static uint8_t ProcHomeStartSMotor(void *param, UI_MSG_T *pMsg)
 {
 #define SENSOR_TIMEOUT  (500)
-  uint8_t string[8];
 
   uint32_t accSensorCount = 0;
   uint8_t flagAutoCount = AUTO_GetFlag();
@@ -1716,7 +1710,7 @@ static uint8_t ProcHomeStartSMotor(void *param, UI_MSG_T *pMsg)
         {
           UI_MSG_T msg = {0, UIMSG_INIT};
           pfProcHome = PF_PROC_HOME_LIST[PROC_HOME_STOP_H_MOTOR];
-					
+          
           return(SwitchHomeSubProcess(param, &msg));
         }
         else if(cntMode == COUNT_MODE_S)
@@ -2062,39 +2056,23 @@ static uint8_t ProcHomeStopHMotor(void *param, UI_MSG_T *pMsg)
   */
 static uint8_t ProcHomeWriteMemory(void *param, UI_MSG_T *pMsg)
 {
-#define  MEMORY_WRITE_TIME  700
-
   switch(pMsg->message)
   {
     case UIMSG_INIT:
     {
-      DISP_ClearAll();
-      
-      RET_WriteRetEnbale(TRUE);
-
-      UI_SetRefreshMsg(MEMORY_WRITE_TIME);
-    }
-    break;
-
-    case UIMSG_REFRESH:
-    {
       UI_MSG_T msg = {0, UIMSG_INIT};
 
-      RET_WriteRetEnbale(FALSE);
-
       pfProcHome = PF_PROC_HOME_LIST[PROC_HOME_IDLE];
-			
+      HomeDispCounter();
+      
       return (SwitchHomeSubProcess(param, &msg));
     }
-    break;
 
     default:
       break;
   }
 
   return UI_RC_CONTINUE;
-
-#undef  MEMORY_WRITE_TIME
 }
 
 /**
@@ -2275,7 +2253,7 @@ uint8_t UI_ProcessHome(void *param, UI_MSG_T *pMsg)
       pfProcHome = PF_PROC_HOME_LIST[PROC_HOME_IDLE];
     }
   }
-	
+  
   return (pfProcHome(param, pMsg));
 }
 /**********************************END OF FILE*********************************/

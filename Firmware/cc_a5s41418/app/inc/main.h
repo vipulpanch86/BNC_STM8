@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file     main.h
-  * @author   Mahajan Electronics Team
-  * @version  V1.0.0
-  * @date     17-August-2015
+  * @author   Vipul Panchal
   * @brief    This file contains the external declarations for main file
   ******************************************************************************
   */
@@ -55,9 +53,8 @@ extern uint8_t  FlagAddCount;
 extern uint8_t  FlagUvDetect;
 extern uint8_t  FlagSensorEn;
 extern uint8_t  CounterMode;
+extern uint16_t AmbientUvValue;
 extern uint32_t SensorCounter;
-
-extern int32_t absolute(int32_t value);
 
 /**
   * @brief  Sets the AUTO Count Variable
@@ -177,6 +174,26 @@ extern int32_t absolute(int32_t value);
 @inline uint32_t SENSOR_GetCount(void)
 {
   return SensorCounter;
+}
+
+/**
+  * @brief  Sets the UV Ambient Value Variable
+  * @param  UV Ambient Value Variable
+  * @retval None
+  */
+@inline void UV_SetAmbientValue(uint16_t av)
+{
+  AmbientUvValue = av;
+}
+
+/**
+  * @brief  Returns the UV Ambient Value Variable
+  * @param  None
+  * @retval UV Ambient Value Variable
+  */
+@inline uint16_t UV_GetAmbientValue(void)
+{
+  return AmbientUvValue;
 }
 
 #include "ret.h"

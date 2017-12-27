@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processsetm.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    11-November-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui Set Mode process function
   ******************************************************************************
   */
@@ -75,7 +73,7 @@ uint8_t UI_ProcessSetM(void * pParam, UI_MSG_T * pMsg)
   }
 
   DISP_UpperClear();
-  DISP_UpperPutStr(SET_MODE_STR[flagAutoCount], 0);
+  DISP_UpperPutStr((char *)SET_MODE_STR[flagAutoCount], 0);
 
   return UI_RC_CONTINUE;
 }

@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processuvset.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    29-October-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui UV Setting process function
   ******************************************************************************
   */
@@ -49,7 +47,7 @@ uint8_t ProcUvsetEdit(void *pParam, UI_MSG_T *pMsg)
   
   static uint32_t EditVal = 0;
   static uint8_t  EditEnable = FALSE;
-  uint8_t string[8];
+  char string[8];
   uint8_t digitVal = KEY_INVALID;
 
   uint32_t EditMinVal = 0, EditMaxVal = 0;
@@ -270,20 +268,20 @@ uint8_t ProcUvsetEdit(void *pParam, UI_MSG_T *pMsg)
       }
     }    
 
-    sprintf(&string[0], DISP_LOWER_STR_FORMAT, EditVal);
+    sprintf((char *)&string[0], DISP_LOWER_STR_FORMAT, EditVal);
   }
   else
   {
     uint32_t uvLevel = 0;
 
     REG_GetValue(&uvLevel, REG_ID_UV_LVL);
-    sprintf(&string[0], DISP_LOWER_STR_FORMAT, uvLevel);
+    sprintf((char *)&string[0], DISP_LOWER_STR_FORMAT, uvLevel);
   }
 
   DISP_ClearAll();
 
   DISP_UpperPutStr("UVSET", 0);
-  DISP_LowerPutStr(&string[0], 0);
+  DISP_LowerPutStr((char *)&string[0], 0);
 
   return UI_RC_CONTINUE;
 
@@ -300,39 +298,22 @@ uint8_t ProcUvsetEdit(void *pParam, UI_MSG_T *pMsg)
   */
 static uint8_t ProcUvsetWrite(void *param, UI_MSG_T *pMsg)
 {
-#define  MEMORY_WRITE_TIME  700
-
   switch(pMsg->message)
   {
     case UIMSG_INIT:
     {
-      DISP_ClearAll();
-
-      RET_WriteRetEnbale(TRUE);
-
-      UI_SetRefreshMsg(MEMORY_WRITE_TIME);
-    }
-    break;
-
-    case UIMSG_REFRESH:
-    {
       UI_MSG_T msg = {0, UIMSG_INIT};
-
-      RET_WriteRetEnbale(FALSE);
 
       pfProcUvset = PF_PROC_UVSET_LIST[PROC_UVSET_EDIT];
 
       return (pfProcUvset(param, &msg));
     }
-    break;
 
     default:
       break;
   }
 
   return UI_RC_CONTINUE;
-
-#undef  MEMORY_WRITE_TIME
 }
 
 /* Public functions ----------------------------------------------------------*/

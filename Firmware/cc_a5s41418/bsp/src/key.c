@@ -1,11 +1,9 @@
 /**
   ******************************************************************************
   * @file    key.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    14-August-2015
-  * @brief   Contains the functions to handle matrix keypad scanning,
-  *          read/write keypad status
+  * @author  Vipul Panchal
+  * @brief   Contains the functions to handle different matrix keypads,
+  *          Initialization and Status update
   ******************************************************************************
   */
 
@@ -316,7 +314,7 @@ void KPD_Scan(void)
       if(KeyDebounce[KeyScanNo] == TRUE)
       {
         /* wait for debounce verification */
-        if(absolute((int32_t)(bspSysTime - KeyBkpTime[KeyScanNo])) >= DebounceTime)
+        if(labs((int32_t)(bspSysTime - KeyBkpTime[KeyScanNo])) >= DebounceTime)
         {
           /* change the key press state */
           KeyPress[KeyScanNo] = (uint8_t)(

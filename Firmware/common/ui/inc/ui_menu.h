@@ -1,24 +1,9 @@
 /**
   ******************************************************************************
   * @file    ui_menu.h
-  * @author  CG Global R&D MCoEx - D&A Team
-  * @version V1.0.0
-  * @date    14-November-2014
+  * @author  Vipul Panchal
   * @brief   This file contains definitions related to
   *          User Interface Menu Items
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2014 Crompton Greaves</center></h2>
-  *
-  * This material is considered a trade secret by Crompton Greaves Limited.
-  * Unauthorized access prohibited
-  * This software is provided "as is" without warranty or merchantability or
-  * fitness for a particular purpose.
-  * Further, Crompton Greaves doesn't warrant/guarantee, or make any
-  * representations regarding the use, or the result of the use, of the
-  * software interms of correctness, accuracy, readability or otherwise.
   *
   ******************************************************************************
   */

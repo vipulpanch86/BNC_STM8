@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processpump.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui pump process function
   ******************************************************************************
   */
@@ -20,7 +18,7 @@
   */
 uint8_t UI_ProcessPump(void *pParam, UI_MSG_T *pMsg)
 {
-  uint8_t string[8];
+  char string[8];
   uint32_t sensorCounter = 0;
 
   switch(pMsg->message)
@@ -49,9 +47,9 @@ uint8_t UI_ProcessPump(void *pParam, UI_MSG_T *pMsg)
   
   sensorCounter = SENSOR_GetCount();
 
-  sprintf(&string[0], DISP_LOWER_STR_FORMAT, sensorCounter);
+  sprintf((char *)&string[0], DISP_LOWER_STR_FORMAT, sensorCounter);
   DISP_LowerClear();
-  DISP_LowerPutStr(&string[0], 0);
+  DISP_LowerPutStr((char *)&string[0], 0);
 
   return UI_RC_CONTINUE;
 }

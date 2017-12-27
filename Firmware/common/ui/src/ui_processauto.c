@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processauto.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui auto process function
   ******************************************************************************
   */
@@ -68,8 +66,8 @@ static uint32_t AutoTestCompleteCount = 0;
 static uint8_t SwitchAutoSubProcess(void *param, UI_MSG_T *pMsg)
 {
   UI_ClearAllMessage();
-	
-  return (pfProcAuto(param, pMsg));	
+  
+  return (pfProcAuto(param, pMsg));  
 }
 
 /**
@@ -80,10 +78,11 @@ static uint8_t SwitchAutoSubProcess(void *param, UI_MSG_T *pMsg)
 static void AutoDispCounter(uint8_t state)
 {
   static uint8_t BlinkOn = TRUE;
-  uint8_t string[8];
+  char string[8];
 
   DISP_ClearAll();
-
+  TURR_Clear();
+  
   switch(state)
   {
     case PROC_AUTO_START_H_MOTOR:
@@ -111,12 +110,14 @@ static void AutoDispCounter(uint8_t state)
         {
           DISP_UpperPutStr(&string[0], 0);
         }
+        DISP_TurrPutStr((char *)&string[DISP_UPPER_MAX_NB - DISP_TURRET_MAX_NB], 0);
+        TURR_PutVal((uint16_t)(AutoAccumulateCount % (DISP_TURRET_MAX_VALUE + 1)));
       }
       else
       {
         DISP_UpperPutStr("A", 0);
       }
-
+      
       BlinkOn = TRUE;
     }
     break;
@@ -129,7 +130,7 @@ static void AutoDispCounter(uint8_t state)
       if(AutoTestCompleteCount > 0)
       {
         sprintf(&string[0], DISP_LOWER_STR_FORMAT, AutoTestCompleteCount);
-        DISP_LowerPutStr(&string[0], 0);
+        DISP_LowerPutStr((char *)&string[0], 0);
       }
 
       if(BlinkOn == TRUE)
@@ -138,17 +139,20 @@ static void AutoDispCounter(uint8_t state)
 
         if(AutoAccumulateCount > 0)
         {
-          sprintf(&string[0], DISP_UPPER_STR_FORMAT, AutoAccumulateCount);
+          sprintf((char *)&string[0], DISP_UPPER_STR_FORMAT, AutoAccumulateCount);
 
           if(AutoAccumulateCount < AUTO_ACCUMULATE_SET)
           {
-            DISP_UpperPutStr(&string[0], 0);
+            DISP_UpperPutStr((char *)&string[0], 0);
             DISP_UpperPutStr("A", 0);
           }
           else
           {
-            DISP_UpperPutStr(&string[0], 0);
+            DISP_UpperPutStr((char *)&string[0], 0);
           }
+          
+          DISP_TurrPutStr((char *)&string[DISP_UPPER_MAX_NB - DISP_TURRET_MAX_NB], 0);
+          TURR_PutVal((uint16_t)(AutoAccumulateCount % (DISP_TURRET_MAX_VALUE + 1)));
         }
         else
         {
@@ -189,6 +193,7 @@ static uint8_t ProcAutoStartHMotor(void *param, UI_MSG_T *pMsg)
 
       BSP_H_MotorEnable(TRUE);
       BSP_V_PumpEnable(TRUE);
+      BSP_UV_DetectEnable(TRUE);
 
       UI_SetRefreshMsg(CAM_SW_TIMEOUT);
     }
@@ -201,13 +206,13 @@ static uint8_t ProcAutoStartHMotor(void *param, UI_MSG_T *pMsg)
 
       pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_ERROR_01];
 
+      BSP_UV_DetectEnable(FALSE);
       BSP_H_MotorEnable(FALSE);
       BSP_V_PumpEnable(FALSE);
 
       return(SwitchAutoSubProcess(param, &msg));
     }
-    break;
-
+    
     case UIMSG_KEY_SWH:
     {
       if((uint8_t)pMsg->param == UI_KEY_RELEASE)
@@ -231,6 +236,7 @@ static uint8_t ProcAutoStartHMotor(void *param, UI_MSG_T *pMsg)
         UI_MSG_T msg = {0, UIMSG_INIT};
         pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_STOP_H_MOTOR];
 
+        BSP_UV_DetectEnable(FALSE);
         BSP_H_MotorEnable(FALSE);
         BSP_V_PumpEnable(FALSE);
 
@@ -269,8 +275,7 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
       SENSOR_SetEnable(TRUE);
       
       BSP_S_MotorEnable(TRUE);
-      BSP_V_PumpEnable(TRUE);
-
+      
       UI_SetRefreshMsg(FREE_RUN_TIMEOUT);
     }
     break;
@@ -288,9 +293,10 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
 
         UI_SetRefreshMsg(0);
 
+        BSP_UV_DetectEnable(FALSE);
         BSP_S_MotorEnable(FALSE);
         BSP_V_PumpEnable(FALSE);
-
+        
         SENSOR_SetEnable(FALSE);
 
         return(SwitchAutoSubProcess(param, &msg));
@@ -303,6 +309,7 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
       UI_MSG_T msg = {0, UIMSG_INIT};
       pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_START_B_COIL];
 
+      BSP_UV_DetectEnable(FALSE);
       BSP_V_PumpEnable(FALSE);
       BSP_S_MotorEnable(FALSE);
 
@@ -310,7 +317,6 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
 
       return(SwitchAutoSubProcess(param, &msg));
     }
-    break;
 
     case UIMSG_KEY_RST:
     {
@@ -368,8 +374,7 @@ static uint8_t ProcAutoStartBCoil(void *param, UI_MSG_T *pMsg)
 
       return (SwitchAutoSubProcess(param, &msg));
     }
-    break;
-
+    
   }
 
   AutoDispCounter(PROC_AUTO_START_B_COIL);
@@ -389,15 +394,12 @@ static uint8_t ProcAutoStopHMotor(void *param, UI_MSG_T *pMsg)
 {
 #define CAM_SW_TIMEOUT    (3000)
 
-  static uint8_t SetCamSwitchTimeOut = FALSE;
-
   switch(pMsg->message)
   {
     case UIMSG_INIT:
     {
       BSP_H_MotorEnable(TRUE);
 
-      SetCamSwitchTimeOut = TRUE;
       UI_SetRefreshMsg(CAM_SW_TIMEOUT);
     }
     break;
@@ -412,16 +414,12 @@ static uint8_t ProcAutoStopHMotor(void *param, UI_MSG_T *pMsg)
 
       return(SwitchAutoSubProcess(param, &msg));
     }
-    break;
 
     case UIMSG_KEY_SWH:
     {
       if((uint8_t)pMsg->param == UI_KEY_PRESS)
       {
         UI_MSG_T msg = {0, UIMSG_INIT};
-
-        uint32_t sensorCounter = 0;
-        sensorCounter = SENSOR_GetCount();
 
         pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_START_S_COIL];
 
@@ -491,7 +489,6 @@ static uint8_t ProcAutoStartSCoil(void *param, UI_MSG_T *pMsg)
 
       return (SwitchAutoSubProcess(param, &msg));
     }
-    break;
   }
 
   AutoDispCounter(PROC_AUTO_START_S_COIL);
@@ -602,7 +599,7 @@ static uint8_t ProcAutoBeep(void *param, UI_MSG_T *pMsg)
     {
       uint32_t sysTime = BSP_GetSysTime();
 
-      if(absolute((int32_t)(sysTime - StartBeepTime)) >= TOTAL_BEEP_TIME)
+      if(labs((int32_t)(sysTime - StartBeepTime)) >= TOTAL_BEEP_TIME)
       {
         UI_MSG_T msg = {0, UIMSG_INIT};
         pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_ADD_DELAY];

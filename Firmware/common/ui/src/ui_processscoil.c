@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processscoil.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui stamp coil process function
   ******************************************************************************
   */
@@ -47,7 +45,6 @@ uint8_t UI_ProcessSCoil(void *pParam, UI_MSG_T *pMsg)
       
       return UI_RC_FINISH;
     }
-    break;
 
     case UIMSG_KEY_RST:
       if((uint8_t)pMsg->param == UI_KEY_PRESS)

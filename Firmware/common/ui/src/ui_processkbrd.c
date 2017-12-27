@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processkbrd.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui keyboard process function
   ******************************************************************************
   */

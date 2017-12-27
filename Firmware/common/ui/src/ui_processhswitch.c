@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processhswitch.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui hopper switch process function
   ******************************************************************************
   */
@@ -61,11 +59,11 @@ uint8_t UI_ProcessHSwitch(void *pParam, UI_MSG_T *pMsg)
 
   if(hSwitchStatus == TRUE)
   {
-    DISP_LowerPutStr("H", DISP_LOWER_MAX_NB - 1);
+    DISP_LowerPutStr("H", (uint8_t)(DISP_LOWER_MAX_NB - 1));
   }
   else
   {
-    DISP_LowerPutStr("L", DISP_LOWER_MAX_NB - 1);
+    DISP_LowerPutStr("L", (uint8_t)(DISP_LOWER_MAX_NB - 1));
   }
 
   return UI_RC_CONTINUE;

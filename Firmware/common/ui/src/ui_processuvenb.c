@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ui_processuvenb.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    29-October-2015
+  * @author  Vipul Panchal
   * @brief   This file contains ui UV Enable process function
   ******************************************************************************
   */
@@ -57,7 +55,7 @@ static uint8_t ProcUvenbEdit(void *pParam, UI_MSG_T *pMsg)
 
       DISP_ClearAll();
       
-      DISP_LowerPutStr(LOWER_STR[uvEnable], 0);
+      DISP_LowerPutStr((char *)LOWER_STR[uvEnable], 0);
     }
     break;
 
@@ -117,7 +115,7 @@ static uint8_t ProcUvenbEdit(void *pParam, UI_MSG_T *pMsg)
   }
 
   DISP_UpperClear();
-  DISP_UpperPutStr(UPPER_STR[uvEnable], 0);
+  DISP_UpperPutStr((char *)UPPER_STR[uvEnable], 0);
 
   return UI_RC_CONTINUE;
 }
@@ -131,39 +129,22 @@ static uint8_t ProcUvenbEdit(void *pParam, UI_MSG_T *pMsg)
   */
 static uint8_t ProcUvenbWrite(void *param, UI_MSG_T *pMsg)
 {
-#define  MEMORY_WRITE_TIME  700
-
   switch(pMsg->message)
   {
     case UIMSG_INIT:
     {
-      DISP_ClearAll();
-      
-      RET_WriteRetEnbale(TRUE);
-
-      UI_SetRefreshMsg(MEMORY_WRITE_TIME);
-    }
-    break;
-
-    case UIMSG_REFRESH:
-    {
       UI_MSG_T msg = {0, UIMSG_INIT};
-
-      RET_WriteRetEnbale(FALSE);
 
       pfProcUvenb = PF_PROC_UVENB_LIST[PROC_UVENB_EDIT];
 
       return (pfProcUvenb(param, &msg));
     }
-    break;
 
     default:
       break;
   }
 
   return UI_RC_CONTINUE;
-
-#undef  MEMORY_WRITE_TIME
 }
 
 /* Public functions ----------------------------------------------------------*/

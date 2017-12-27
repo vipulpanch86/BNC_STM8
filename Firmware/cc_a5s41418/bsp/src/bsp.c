@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    bsp.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    11-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains the board related functions
   ******************************************************************************
   */
@@ -106,9 +104,7 @@ static void GPIO_Config(void)
   /* Initialize AUTO Switch as Input */
   GPIO_Init(SW_AUTO_PORT, SW_AUTO_PIN, GPIO_MODE_IN_PU_NO_IT);
 
-  /* Initialize Sensor as Input with Interrupt */
-  GPIO_Init(SENSOR_PORT, SENSOR_PIN, GPIO_MODE_IN_FL_IT);
-  EXTI_SetExtIntSensitivity(SENSOR_EXTI, SENSOR_EXTI_SENSE);
+
 
   /* Initialize Turret as Output */
   GPIO_Init(TUR_EN_PORT, TUR_EN_PIN, GPIO_MODE_OUT_PP_HIGH_SLOW);
@@ -122,11 +118,22 @@ static void GPIO_Config(void)
   /* Initalize Buzzer as Output */
   GPIO_Init(BUZZER_PORT, BUZZER_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
 
-  /* Initalize UV Enable as Output */
-  GPIO_Init(UV_ENB_PORT, UV_ENB_PIN, GPIO_MODE_OUT_PP_HIGH_SLOW);
 
-  /*  Init GPIO for UV AIN */
-  GPIO_Init(UV_AIN_PORT, UV_AIN_PIN, GPIO_MODE_IN_FL_NO_IT);
+}
+
+/**
+  * @brief  Configures Sensor GPIO and EXTI Line.
+  * @param  None
+  * @retval None
+  */
+void SENSOR_Config(void)
+{
+  /* Configure Sensor pin as input */
+  GPIO_Init(SENSOR_PORT, SENSOR_PIN, GPIO_MODE_IN_FL_IT);
+  /* Connect Sensor EXTI Line to Sensor GPIO Pin */
+  EXTI_SetExtIntSensitivity(SENSOR_EXTI, SENSOR_EXTI_SENSE);
+
+
 }
 
 /**
@@ -197,19 +204,29 @@ static void UART1_Config(void)
 }
 
 /**
-  * @brief  Configure ADC2 Single Conversion
+  * @brief  UV Configuration
   * @param  None
   * @retval None
   */
-static void ADC_Config(void)
+static void UV_Config(void)
 {
+  /* Configure the UV Enable as Output
+     Default State is High (UV Disable)
+  */
+  GPIO_Init(UV_ENB_PORT, UV_ENB_PIN, GPIO_MODE_OUT_PP_HIGH_SLOW);
+
+  /*  Init GPIO for UV AIN */
+  GPIO_Init(UV_AIN_PORT, UV_AIN_PIN, GPIO_MODE_IN_FL_NO_IT);
+  
   /* De-Init ADC peripheral*/
   ADC2_DeInit();
 
   /* Init ADC2 peripheral */
-  ADC2_Init(ADC2_CONVERSIONMODE_SINGLE, ADC2_CHANNEL_8, ADC2_PRESSEL_FCPU_D18, \
+  ADC2_Init(ADC2_CONVERSIONMODE_CONTINUOUS, ADC2_CHANNEL_8, ADC2_PRESSEL_FCPU_D18, \
             ADC2_EXTTRIG_TIM, DISABLE, ADC2_ALIGN_RIGHT, ADC2_SCHMITTTRIG_CHANNEL8, \
             DISABLE);
+  /* Enable EOC interrupt */
+  ADC2_ITConfig(ENABLE);
 
   /* Start ADC2 Conversion */
   ADC2_StartConversion();
@@ -226,13 +243,13 @@ void BSP_BuzzerExec(void)
 
   if(BuzzerEnable == TRUE)
   {
-    if(absolute((int32_t)(SystemTimer - BackupSysTime)) >= BuzzerOnTime)
+    if(labs((int32_t)(SystemTimer - BackupSysTime)) >= BuzzerOnTime)
     {
       BuzzerEnable = FALSE;
       BuzzerOnTime = 0;
       BackupSysTime = 0;
 
-      BUZZER_PORT->ODR &= (uint8_t)~BUZZER_PIN;
+      BSP_ClrGPIO(BUZZER_PORT, BUZZER_PIN);
     }
   }
   else
@@ -242,7 +259,7 @@ void BSP_BuzzerExec(void)
       BuzzerEnable = TRUE;
       BackupSysTime = SystemTimer;
       
-      BUZZER_PORT->ODR |= (uint8_t)BUZZER_PIN;
+      BSP_SetGPIO(BUZZER_PORT, BUZZER_PIN);
     }
   }
 }
@@ -259,7 +276,7 @@ void BSP_AdcExec(void)
   ADC2_ClearFlag();
   adcVal = ADC2_GetConversionValue();
   ADC2_StartConversion();
-  AdcValue = (AdcValue >> 1) + (AdcValue >> 2) + (adcVal >> 2);
+  AdcValue = (AdcValue >> 1) + (adcVal >> 1);
 }
 
 /* Public functions ----------------------------------------------------------*/
@@ -286,12 +303,23 @@ void BSP_Init(void)
   UART1_Config();
 
   /* ADC configuration */
-  ADC_Config();
+  UV_Config();
 
   /* Enable general interrupts */
   enableInterrupts();
 }
 
+/**
+  * @brief  Inserts Delay in Milliseconds
+  * @param  Value in Milliseconds to crreate delay
+  * @retval None
+  */
+void BSP_DelayMs(uint16_t delay)
+{
+  uint32_t backupSysTmr = SystemTimer;
+  
+  while(labs(SystemTimer - backupSysTmr) < delay);
+}
 /**
   * @brief  Reads from Flash
   * @param  size - No of bytes to be read
