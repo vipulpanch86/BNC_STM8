@@ -23,7 +23,7 @@
 #endif
 
 typedef enum
-{
+{	
   COUNT_MODE_C,
   COUNT_MODE_B,
   COUNT_MODE_F,
@@ -36,8 +36,6 @@ typedef enum
 
 #define MAX_LCD_RESLN     (99999)
 #define MAX_ADD_COUNT     (999999999)
-
-#define LCD_WRAP_CHAR     ((char)'L')
 
 #define DEF_NOTE_C_COUNT  (100)
 #define DEF_NOTE_B_COUNT  (100)

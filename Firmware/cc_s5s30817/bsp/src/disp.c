@@ -227,6 +227,21 @@ void DISP_UpperClear(void)
   }
 }
 
+
+/**
+  * @brief  Displays a Character on the Upper display
+  * @param  chr - Character to be displayed
+  *         dispNo - Display No. on which character to be displayed
+  * @retval None
+  */
+void DISP_UpperPutChar(char chr, uint8_t dispNo)
+{
+ if(dispNo < DISP_UPPER_MAX_NB)
+  {
+    DisplayData.SevenSeg[DISP_UPPER_START_NB + dispNo] = S7_CalcSegments(chr);
+  }
+}
+
 /**
   * @brief  Displays a String on the Upper display
   * @param  pStr - Pointer to the String to be displayed

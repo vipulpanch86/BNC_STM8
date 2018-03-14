@@ -1,11 +1,9 @@
 /**
   ******************************************************************************
   * @file    key.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    14-August-2015
-  * @brief   Contains the functions to handle matrix keypad scanning,
-  *          read/write keypad status
+  * @author  Vipul Panchal
+  * @brief   Contains the functions to handle different matrix keypads,
+  *          Initialization and Status update
   ******************************************************************************
   */
 
@@ -276,7 +274,7 @@ void KPD_Scan(void)
 {
   uint8_t keyScanNo = 0, scanLine = 0, retLine = 0;
   uint8_t keyPressBit[(NB_KEYS / 8) + ((NB_KEYS % 8) ? (1) : (0)) ] = {0};
-	//uint32_t keyPressBit = 0;
+  //uint32_t keyPressBit = 0;
   uint32_t bspSysTime = BSP_GetSysTime();
   
   /* Check if any key is pressed in Muxed lines */
@@ -299,7 +297,7 @@ void KPD_Scan(void)
         
         /* change the key press state */
         keyPressBit[keyScanNo >> 3] |= (uint8_t)(1 << (keyScanNo & 0x7));
-				//keyPressBit |= 1 << keyScanNo;
+        //keyPressBit |= 1 << keyScanNo;
         
         break;
       }
@@ -327,7 +325,7 @@ void KPD_Scan(void)
     if((RET_PORT[retLine - RT_NB_MUXED]->IDR & RET_PIN[retLine - RT_NB_MUXED]) == 0)
     {
       keyPressBit[keyScanNo >> 3] |= (uint8_t)(1 << (keyScanNo & 0x7));
-			//keyPressBit |= 1 << keyScanNo;
+      //keyPressBit |= 1 << keyScanNo;
     }
   }
 
@@ -362,10 +360,10 @@ void KPD_Scan(void)
         KeyDebounce[keyScanNo] = TRUE;
       }
     }
-		else
-		{
-			KeyDebounce[keyScanNo] = FALSE;
-		}
+    else
+    {
+      KeyDebounce[keyScanNo] = FALSE;
+    }
 
     SetKeyState(keyScanNo, KeyPress[keyScanNo]);
   }

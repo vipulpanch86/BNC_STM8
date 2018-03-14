@@ -288,7 +288,7 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
       {
         UI_MSG_T msg = {0, UIMSG_INIT};
         pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_START_B_COIL];
-				
+        
         AutoAccumulateCount -= (AutoAccumulateCount % 100); 
 
         UI_SetRefreshMsg(0);
@@ -317,7 +317,7 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
 
       return(SwitchAutoSubProcess(param, &msg));
     }
-
+    
     case UIMSG_KEY_RST:
     {
       if((uint8_t)pMsg->param == UI_KEY_PRESS)
@@ -325,6 +325,7 @@ static uint8_t ProcAutoStartSMotor(void *param, UI_MSG_T *pMsg)
         UI_MSG_T msg = {0, UIMSG_INIT};
         pfProcAuto = PF_PROC_AUTO_LIST[PROC_AUTO_STOP_H_MOTOR];
 
+        BSP_UV_DetectEnable(FALSE);
         BSP_V_PumpEnable(FALSE);
         BSP_S_MotorEnable(FALSE);
 

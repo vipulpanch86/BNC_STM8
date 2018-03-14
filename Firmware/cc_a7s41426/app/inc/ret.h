@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
-  * @file    ret.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    28-August-2015
+  * @file    ret.h
+  * @author  Vipul Panchal
   * @brief   This file contains the retention memory definitions and prototype.
   ******************************************************************************
   */
@@ -24,12 +22,9 @@
 #define RET_REG_DATA_SIZE          (64)
 
 void RET_Init(void);
-void RET_ClearMemory(void);
 void RET_WriteMem(uint8_t idx, uint32_t *pData);
 void RET_ReadMem(uint8_t idx, uint32_t *pData);
-void RET_WriteRetEnbale(uint8_t enable);
 void RET_UpdateFlash(void);
-void RET_Exec(void);
 
 #endif /* __RET_H */
 /*********************************END OF FILE**********************************/

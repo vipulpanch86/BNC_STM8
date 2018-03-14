@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    turret.h
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    28-February-2016
+  * @author  Vipul Panchal
   * @brief   This file contains definitions for turret resources.
   ******************************************************************************
   */

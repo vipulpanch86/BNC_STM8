@@ -136,8 +136,8 @@ static void HomeDispCounter(void)
   static uint8_t  lacsDispEn = TRUE;
   static uint32_t BkupSysTimer = 0;
 
-  uint32_t TopDispValue, BotDispValue;
-  uint8_t strTopDisp[8], strBotDisp[8];
+  char str[8];
+  uint32_t TopDispValue, BotDispValue, TurrDispValue;
   uint32_t noteSetCount = 0, valueCounter = 0, accSensorCount = 0;
 
   uint8_t flagAutoCount = AUTO_GetFlag();
@@ -154,6 +154,7 @@ static void HomeDispCounter(void)
 
   /* Clear all Display */
   DISP_ClearAll();
+  TURR_Clear();
   
   DISP_Led(DISP_LED_ADD, (uint8_t)flagAddCount);
   DISP_Led(DISP_LED_AUTO, (uint8_t)flagAutoCount);
@@ -193,14 +194,10 @@ static void HomeDispCounter(void)
   }
   #endif
 
-
   /* Display Handling;
      If Add Flag is TRUE, show Added Count on 16 Seg &  Running Count on 7seg,  No display for Set Count
      If Add Flag is FALSE, show Running Count on 16seg and set count on 7seg
   */
-  memset(&strTopDisp[0], ' ', sizeof(strTopDisp));
-  memset(&strBotDisp[0], ' ', sizeof(strBotDisp));
-
   if(flagAddCount == TRUE)
   {
     TopDispValue = accSensorCount;
@@ -218,8 +215,11 @@ static void HomeDispCounter(void)
     BotDispValue = noteSetCount;
     #endif
   }
+  
+  TurrDispValue = sensorCounter;
 
   /* Top Display */
+  memset(&str[0], ' ', sizeof(str));
   /* Division by 10 for First Character of Mode */
   if(TopDispValue > (dispUppMaxResln / 10))
   {
@@ -228,11 +228,11 @@ static void HomeDispCounter(void)
     {
       if(TopDispValue > dispUppMaxResln)
       {
-        sprintf((char *)&strTopDisp[0], "%lu%c", TopDispValue / (dispUppMaxResln + 1), DISP_WRAP_CHAR);
+        sprintf((char *)&str[0], "%lu%c", TopDispValue / (dispUppMaxResln + 1), DISP_WRAP_CHAR);
       }
       else
       {
-        sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
+        sprintf((char *)&str[0], DISP_UPPER_STR_FORMAT, TopDispValue);
       }
     }
     else
@@ -249,37 +249,43 @@ static void HomeDispCounter(void)
 
         if(lacsDispEn == TRUE)
         {
-          sprintf((char *)&strTopDisp[0], "%lu%c", TopDispValue / (dispUppMaxResln + 1), DISP_WRAP_CHAR);
+          sprintf((char *)&str[0], "%lu%c", TopDispValue / (dispUppMaxResln + 1), DISP_WRAP_CHAR);
         }
         else
         {
-          sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT,
+          sprintf((char *)&str[0], DISP_UPPER_STR_FORMAT,
                   TopDispValue % (dispUppMaxResln + 1));
         }
       }
       else
       {
-        sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
+        sprintf((char *)&str[0], DISP_UPPER_STR_FORMAT, TopDispValue);
       }
     }
   }
   else
   {
-    sprintf((char *)&strTopDisp[0], DISP_UPPER_STR_FORMAT, TopDispValue);
-    strTopDisp[0] = (char)charCountMode[cntMode];
+    sprintf((char *)&str[0], DISP_UPPER_STR_FORMAT, TopDispValue);
+    str[0] = (char)charCountMode[cntMode];
   }
+  
+  DISP_UpperPutStr((char *)&str[0], 0);
 
   /* Bottom Display */
+  memset(&str[0], ' ', sizeof(str));
   if(BotDispValue > 0)
   {
-    sprintf((char *)&strBotDisp[0], DISP_LOWER_STR_FORMAT, BotDispValue);
+    sprintf((char *)&str[0], DISP_LOWER_STR_FORMAT, BotDispValue);
   }
+  DISP_LowerPutStr((char *)&str[0], 0);
 
-  DISP_UpperPutStr((char *)&strTopDisp[0], 0);
-  DISP_LowerPutStr((char *)&strBotDisp[0], 0);
-
-  DISP_TurrPutStr((char *)&strTopDisp[DISP_UPPER_MAX_NB - DISP_TURRET_MAX_NB], 0);
-  TURR_PutVal((uint16_t)(TopDispValue % (DISP_TURRET_MAX_VALUE + 1)));
+  /* Turret Display */
+  memset(&str[0], ' ', sizeof(str));
+  sprintf((char *)&str[0], DISP_TURR_STR_FORMAT, 
+          (uint32_t)(TurrDispValue % (DISP_TURRET_MAX_VALUE + 1)));
+					
+  DISP_TurrPutStr((char *)&str[0], 0);
+  TURR_PutVal((uint16_t)(TurrDispValue % (DISP_TURRET_MAX_VALUE + 1)));
 }
 
 /**
@@ -1183,11 +1189,11 @@ static uint8_t ProcHomeIdle(void *param, UI_MSG_T *pMsg)
       if((uint8_t)pMsg->param == UI_KEY_PRESS)
       {
         #if (COUNT_MODE_V_EN)
-        uint32_t valueCounter = 0;
         uint8_t cntMode = COUNTER_GetMode();
 
         if(cntMode == COUNT_MODE_V)
         {
+          uint32_t valueCounter = 0;
           REG_SetValue(&valueCounter, REG_ID_VALUE_COUNTER);
         }
         #endif
@@ -1222,7 +1228,7 @@ static uint8_t ProcHomeEdit(void *param, UI_MSG_T *pMsg)
 #define KEY_UNITS   0x40
 
   static uint32_t EditVal = 0;
-  uint8_t string[8];
+  char string[8];
   uint8_t digitVal = KEY_INVALID;
   uint32_t EditMinVal = 0, EditMaxVal = 0;
 
@@ -1597,7 +1603,6 @@ static uint8_t ProcHomeStartSMotor(void *param, UI_MSG_T *pMsg)
 
       return(SwitchHomeSubProcess(param, &msg));
     }
-    break;
 
     case UIMSG_COUNTER:
     {
@@ -1823,9 +1828,9 @@ static uint8_t ProcHomeStartBCoil(void *param, UI_MSG_T *pMsg)
         UI_MSG_T msg = {0, UIMSG_INIT};
         
         BSP_B_CoilEnable(FALSE);
-				
+        
         UI_SetRefreshMsg(0);
-				
+        
         pfProcHome = PF_PROC_HOME_LIST[PROC_HOME_STOP_H_MOTOR];
 
         return (SwitchHomeSubProcess(param, &msg));
@@ -1880,7 +1885,6 @@ static uint8_t ProcHomeStartSCoil(void *param, UI_MSG_T *pMsg)
 
       return (SwitchHomeSubProcess(param, &msg));
     }
-    break;
 
     case UIMSG_KEY_RST:
     {
@@ -1896,7 +1900,7 @@ static uint8_t ProcHomeStartSCoil(void *param, UI_MSG_T *pMsg)
         {
           BSP_S_CoilEnable(FALSE);
         }
-				
+        
         return (SwitchHomeSubProcess(param, &msg));
       }
     }
@@ -1939,10 +1943,9 @@ static uint8_t ProcHomeStopHMotor(void *param, UI_MSG_T *pMsg)
       pfProcHome = PF_PROC_HOME_LIST[PROC_HOME_ERROR_01];
 
       BSP_H_MotorEnable(FALSE);
-			
+      
       return(SwitchHomeSubProcess(param, &msg));
     }
-    break;
 
     case UIMSG_KEY_SWH:
     {
@@ -2031,7 +2034,7 @@ static uint8_t ProcHomeStopHMotor(void *param, UI_MSG_T *pMsg)
         {
           pfProcHome = PF_PROC_HOME_LIST[PROC_HOME_IDLE];
         }
-				
+        
         return (SwitchHomeSubProcess(param, &msg));
       }
     }
@@ -2118,7 +2121,7 @@ static uint8_t ProcHomeBeep(void *param, UI_MSG_T *pMsg)
       {
         UI_MSG_T msg = {0, UIMSG_INIT};
 
-				BeepOn = FALSE;
+        BeepOn = FALSE;
         BSP_DisableBuzzer();
         
         UI_SetRefreshMsg(0);

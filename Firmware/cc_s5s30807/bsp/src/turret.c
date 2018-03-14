@@ -1,10 +1,8 @@
 /**
   ******************************************************************************
   * @file    turret.c
-  * @author  Mahajan Electronics Team
-  * @version  V1.0.0
-  * @date     28-February-2016
-  * @brief   This file contains the parser for turret.
+  * @author  Vipul Panchal
+  * @brief   This file contains the parser for serial turret.
   ******************************************************************************
   */
 
@@ -83,6 +81,8 @@ void TURR_Exec(void)
   TurretExecute = FALSE;
     
   TurretTxPointer = 0;
+  /* Enable the TURR_COM Transmit interrupt: this interrupt is generated when the 
+  TURR_COM transmit data register is empty */  
   UART1_ITConfig(UART1_IT_TXE, ENABLE);
 }
 /***********************END OF FILE************************/

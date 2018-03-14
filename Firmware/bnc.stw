@@ -17,6 +17,7 @@ Dependencies=
 
 [Project3]
 Filename=cc_s5s30807\cc_s5s30807.stp
+Dependencies=
 
 [Project4]
 Filename=cc_s5s30817\cc_s5s30817.stp
@@ -26,8 +27,10 @@ Dependencies=
 Filename=cc_turret\cc_turret.stp
 Dependencies=
 
+[Project6]
+Filename=cc_ser_turr\cc_ser_turr.stp
 Dependencies=
 [Options]
-ActiveProject=cc_a5s41418
+ActiveProject=cc_ser_turr
 ActiveConfig=Release
 AddSortedElements=1

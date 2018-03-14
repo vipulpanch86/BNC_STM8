@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    bsp.h
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    11-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains the board related definitions.
   ******************************************************************************
   */
@@ -144,6 +142,36 @@
 
 #define TRIACB_PORT   (GPIOG)
 #define TRIACB_PIN    (GPIO_PIN_5)
+
+/**
+  * @brief Welcome Message Definition
+  */  
+#define WELCOME_MSG_SIZE        16
+#define WELCOME_MSG_ADDR        0x004000
+
+/**
+  * @brief  Writes high level to the specified GPIO pins.
+  * @param  GPIOx : Select the GPIO peripheral number (x = A to I).
+  * @param  PortPins : Specifies the pins to be turned high to the port output.
+  *         data register.
+  * @retval None
+  */
+@inline void BSP_SetGPIO(GPIO_TypeDef* GPIOx, GPIO_Pin_TypeDef Pins)
+{
+  GPIOx->ODR |= (uint8_t)Pins;
+}
+
+/**
+  * @brief  Writes low level to the specified GPIO pins.
+  * @param  GPIOx : Select the GPIO peripheral number (x = A to I).
+  * @param  PortPins : Specifies the pins to be turned low to the port output.
+  *         data register.
+  * @retval None
+  */
+@inline void BSP_ClrGPIO(GPIO_TypeDef* GPIOx, GPIO_Pin_TypeDef Pins)
+{
+  GPIOx->ODR &= (uint8_t)~Pins;
+}
 
 /**
   * @brief  Read Cam Switch
@@ -322,6 +350,7 @@ extern __IO uint32_t BspSensorCounter;
 }
 
 void BSP_Init(void);
+void BSP_DelayMs(uint16_t delay);
 void BSP_BuzzerExec(void);
 void BSP_AdcExec(void);
 void BSP_ReadFromFlash(uint16_t size, uint8_t *pData);

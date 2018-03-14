@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    ret.c
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    28-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains the retention memory handling function.
   ******************************************************************************
   */
@@ -16,14 +14,13 @@
 
 /* Private define ------------------------------------------------------------*/
 #define RET_MEM_SIZE       64
+#define DATA_START_ADDR    0x004080
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private Constant ----------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* RAM Memory in synchronization with Retentive Memory */
 static uint32_t RetentionMem[RET_MEM_SIZE / 4];
-/* Flag to Indicate to the Exec process to update the Retentive memory */
-static uint8_t UpdateRet = FALSE, EnableRet = FALSE;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /* Public functions ----------------------------------------------------------*/
@@ -35,24 +32,6 @@ static uint8_t UpdateRet = FALSE, EnableRet = FALSE;
 void RET_Init(void)
 {
   BSP_ReadFromFlash(RET_MEM_SIZE, (uint8_t *)&RetentionMem[0]);
-  UpdateRet = FALSE;
-}
-
-/**
-  * @brief  Clears the Retentive Memory and stores in the RAM
-  * @param  None
-  * @retval None
-  */
-void RET_ClearMemory(void)
-{
-  uint16_t cnt;
-
-  for(cnt = 0; cnt < (RET_MEM_SIZE / 4); cnt++)
-  {
-    RetentionMem[cnt] = 0;
-  }
-
-  UpdateRet = TRUE;
 }
 
 /**
@@ -63,8 +42,15 @@ void RET_ClearMemory(void)
   */
 void RET_WriteMem(uint8_t idx, uint32_t *pData)
 {
+  uint32_t * pFlashPtr = (uint32_t *)DATA_START_ADDR;
   RetentionMem[idx]  = *pData;
-  UpdateRet = TRUE;
+  /* Unlock Data memory */
+  FLASH_Unlock(FLASH_MEMTYPE_DATA);
+
+  /* Program word at address */
+  FLASH_ProgramWord((uint32_t)&pFlashPtr[idx], *pData);
+  
+  FLASH_Lock(FLASH_MEMTYPE_DATA);
 }
 
 /**
@@ -79,16 +65,6 @@ void RET_ReadMem(uint8_t idx, uint32_t *pData)
 }
 
 /**
-  * @brief  Enable / Diable Writing to Retentive Memory
-  * @param  enable - True / False
-  * @retval None
-  */
-void RET_WriteRetEnbale(uint8_t enable)
-{
-  EnableRet = (uint8_t)(enable ? TRUE : FALSE);
-}
-
-/**
   * @brief  Updates the Retention Memory to Flash
   * @param  None
   * @retval None
@@ -96,19 +72,5 @@ void RET_WriteRetEnbale(uint8_t enable)
 void RET_UpdateFlash(void)
 {
   BSP_WriteToFlash(RET_MEM_SIZE, (uint8_t *)&RetentionMem[0]);
-}
-
-/**
-  * @brief  Executes Retention memory update
-  * @param  none
-  * @retval None
-  */
-void RET_Exec(void)
-{
-  if((UpdateRet == TRUE) && (EnableRet == TRUE))
-  {
-    UpdateRet = FALSE;
-    BSP_WriteToFlash(RET_MEM_SIZE, (uint8_t *)&RetentionMem[0]);
-  }
 }
 /*********************************END OF FILE**********************************/

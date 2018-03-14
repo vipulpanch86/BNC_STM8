@@ -20,6 +20,7 @@ static const char CharacterList[] =
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
   'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  '-', '.'
 };
 
 static uint8_t GetCharIndex(char character)
@@ -66,12 +67,12 @@ uint8_t UI_ProcessMsgSet(void *pParam, UI_MSG_T *pMsg)
     break;
 
   /* Up Scrolls the current character from the list */
-	  #ifdef KPD_KEY_UP
+    #ifdef KPD_KEY_UP
     case UIMSG_KEY_UP:
-		#endif
-		#ifdef KPD_KEY_NEXT
+    #endif
+    #ifdef KPD_KEY_NEXT
     case UIMSG_KEY_NEXT:
-		#endif
+    #endif
       if((uint8_t)pMsg->param == UI_KEY_PRESS)
       {
         CursorCharIdx = (uint8_t)(((CursorCharIdx + 1) >= sizeof(CharacterList)) ?
@@ -83,11 +84,11 @@ uint8_t UI_ProcessMsgSet(void *pParam, UI_MSG_T *pMsg)
 
   /* Down Scrolls the current character from the list */
     #ifdef KPD_KEY_DOWN
-		case UIMSG_KEY_DOWN:
-		#endif
-		#ifdef KPD_KEY_BACK
+    case UIMSG_KEY_DOWN:
+    #endif
+    #ifdef KPD_KEY_BACK
     case UIMSG_KEY_BACK:
-		#endif
+    #endif
       if((uint8_t)pMsg->param == UI_KEY_PRESS)
       {
         CursorCharIdx = (uint8_t)((CursorCharIdx == 0) ? 
@@ -98,7 +99,7 @@ uint8_t UI_ProcessMsgSet(void *pParam, UI_MSG_T *pMsg)
     break;
     
   /* Moves MsgCursorPos forward */
-	  #ifdef KPD_KEY_ENT
+    #ifdef KPD_KEY_ENT
     case UIMSG_KEY_ENT:
       if((uint8_t)pMsg->param == UI_KEY_PRESS)
       {
@@ -108,18 +109,18 @@ uint8_t UI_ProcessMsgSet(void *pParam, UI_MSG_T *pMsg)
         cursorBlinkOn = FALSE;
       }
     break;
-		#endif
+    #endif
     
   /* Moves MsgCursorPos backward */
-	  #ifdef KPD_KEY_CLR
+    #ifdef KPD_KEY_CLR
     case UIMSG_KEY_CLR:
-		#endif
-		#ifdef KPD_KEY_MODE
+    #endif
+    #ifdef KPD_KEY_MODE
     case UIMSG_KEY_MODE:
-		#endif
-		#ifdef KPD_KEY_FUNC
+    #endif
+    #ifdef KPD_KEY_FUNC
     case UIMSG_KEY_FUNC:
-		#endif
+    #endif
       if((uint8_t)pMsg->param == UI_KEY_PRESS)
       {
         MsgCursorPos = (uint8_t)((MsgCursorPos == 0) ? 
@@ -172,7 +173,7 @@ uint8_t UI_ProcessMsgSet(void *pParam, UI_MSG_T *pMsg)
   /* Toggle Cursor Blinking */
   cursorBlinkOn = (uint8_t)((cursorBlinkOn == FALSE) ? TRUE : FALSE);
 
-  UI_SetRefreshMsg(500);
+  UI_SetRefreshMsg(CURSOR_BLINK_TIME);
   
   return UI_RC_CONTINUE;
 

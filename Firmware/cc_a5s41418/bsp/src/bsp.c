@@ -104,8 +104,6 @@ static void GPIO_Config(void)
   /* Initialize AUTO Switch as Input */
   GPIO_Init(SW_AUTO_PORT, SW_AUTO_PIN, GPIO_MODE_IN_PU_NO_IT);
 
-
-
   /* Initialize Turret as Output */
   GPIO_Init(TUR_EN_PORT, TUR_EN_PIN, GPIO_MODE_OUT_PP_HIGH_SLOW);
 
@@ -117,8 +115,6 @@ static void GPIO_Config(void)
 
   /* Initalize Buzzer as Output */
   GPIO_Init(BUZZER_PORT, BUZZER_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
-
-
 }
 
 /**
@@ -132,7 +128,6 @@ void SENSOR_Config(void)
   GPIO_Init(SENSOR_PORT, SENSOR_PIN, GPIO_MODE_IN_FL_IT);
   /* Connect Sensor EXTI Line to Sensor GPIO Pin */
   EXTI_SetExtIntSensitivity(SENSOR_EXTI, SENSOR_EXTI_SENSE);
-
 
 }
 
@@ -290,6 +285,9 @@ void BSP_Init(void)
   /* GPIO configuration */
   GPIO_Config();
 
+  /* Sensor COnfiguration */
+  SENSOR_Config();
+  
   /* Flash configuration */
   FLASH_Config();
 
@@ -320,6 +318,7 @@ void BSP_DelayMs(uint16_t delay)
   
   while(labs(SystemTimer - backupSysTmr) < delay);
 }
+
 /**
   * @brief  Reads from Flash
   * @param  size - No of bytes to be read

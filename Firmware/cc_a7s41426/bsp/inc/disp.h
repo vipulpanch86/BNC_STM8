@@ -1,10 +1,8 @@
 /**
   ******************************************************************************
   * @file    disp.h
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    16-August-2015
-  * @brief   This file contains definitions for dsiplay resources.
+  * @author  Vipul Panchal
+  * @brief   This file contains definitions for display resources.
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -25,12 +23,21 @@ extern "C" {
 
 #define DISP_MAX_NB_SEL      (12)  /* 12 Disp select x 2 Latch Enable */
 
-#define DISP_LOWER_START_NB  (7)
-#define DISP_LOWER_MAX_NB    (4)
+/* Format Specifier for display strings */
 #define DISP_UPPER_START_NB  (0)
 #define DISP_UPPER_MAX_NB    (7)
+#define DISP_LOWER_START_NB  (7)
+#define DISP_LOWER_MAX_NB    (4)
 #define DISP_TURRET_START_NB (0)
 #define DISP_TURRET_MAX_NB   (4)
+
+/* Max Value definition for display strings */
+#define DISP_LOWER_MAX_VALUE  (9999)
+#define DISP_UPPER_MAX_VALUE  (9999999)
+#define DISP_TURRET_MAX_VALUE (9999)
+
+/* Display Wrap Character Definition */
+#define DISP_WRAP_CHAR       ((char)'C')
 
 #if (HW_VARIANT == 0)
 
@@ -65,6 +72,7 @@ extern "C" {
 #define DISP_LED_V_1000      (13)
 #endif
 
+/* Format Specifier for display strings */
 #define DISP_LOWER_STR_FORMAT "%4lu"
 #define DISP_UPPER_STR_FORMAT "%7lu"
 #define DISP_TURR_STR_FORMAT  "%4lu"
@@ -75,6 +83,7 @@ void DISP_Disable(void);
 void DISP_LowerClear(void);
 void DISP_LowerPutStr(char *pStr, uint8_t startDispNo);
 void DISP_UpperClear(void);
+void DISP_UpperPutChar(char chr, uint8_t dispNo);
 void DISP_UpperPutStr(char *pStr, uint8_t startDispNo);
 void DISP_TurrClear(void);
 void DISP_TurrPutStr(char *pStr, uint8_t startDispNo);

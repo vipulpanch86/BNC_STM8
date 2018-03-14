@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    reg.h
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    28-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains the register handling definations and prototype.
   ******************************************************************************
   */

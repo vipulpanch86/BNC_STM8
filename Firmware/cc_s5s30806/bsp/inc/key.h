@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    key.h
-  * @author  Mahajan Electronics Team
-  * @version V1.0.0
-  * @date    14-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains definitions for keypad resources.
   ******************************************************************************
   */

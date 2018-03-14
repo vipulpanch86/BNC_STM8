@@ -1,9 +1,7 @@
 /**
   ******************************************************************************
   * @file    main.c
-  * @author  Mahajan Electronics Team
-  * @version  V1.0.0
-  * @date     11-August-2015
+  * @author  Vipul Panchal
   * @brief   This file contains the main function for Currency counting
   *          application.
   ******************************************************************************
@@ -17,11 +15,21 @@
 #define DISP_EXEC_MS (1)
 #define KPD_SCAN_MS  (1)
 #define BUZZ_EXEC_MS (100)
-#define RET_EXEC_MS  (1)
 #define SNR_EXEC_MS  (1)
 #define UI_EXEC_MS   (10)
 
 /* Private define ------------------------------------------------------------*/
+#ifdef _RAISONANCE_
+#define PUTCHAR_PROTOTYPE int putchar (char c)
+#define GETCHAR_PROTOTYPE int getchar (void)
+#elif defined (_COSMIC_)
+#define PUTCHAR_PROTOTYPE char putchar (char c)
+#define GETCHAR_PROTOTYPE char getchar (void)
+#else /* _IAR_ */
+#define PUTCHAR_PROTOTYPE int putchar (int c)
+#define GETCHAR_PROTOTYPE int getchar (void)
+#endif /* _RAISONANCE_ */
+
 #define SENSOR_EXEC_WAIT_COUNTING_EN  (0)
 #define SENSOR_EXEC_EXECUTE_COUNTING  (1)
 #define WAIT_FOR_SENSOR_DISABLE_MS    (50)
@@ -33,12 +41,14 @@ uint8_t  FlagAddCount = 0;
 uint8_t  FlagUvDetect = 0;
 uint8_t  FlagSensorEn = 0;
 uint8_t  CounterMode = COUNT_MODE_C;
+uint16_t AmbientUvValue = 0;
 uint32_t SensorCounter = 0;
 
 static uint8_t SensorExecState = SENSOR_EXEC_WAIT_COUNTING_EN;
 static uint8_t UvDetected = FALSE;
 static uint32_t BkupSensorCounter = 0;
 static uint8_t WaitLastNoteCount = 0;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /* Public functions ----------------------------------------------------------*/
@@ -82,7 +92,7 @@ static uint8_t WaitLastNoteCount = 0;
     if(bspSensorCounter != BkupSensorCounter)
     {
       UI_MSG_T msg = {0, UIMSG_COUNTER};
-  
+
       SensorCounter += (bspSensorCounter - BkupSensorCounter);
       BkupSensorCounter = bspSensorCounter;
       
@@ -95,7 +105,9 @@ static uint8_t WaitLastNoteCount = 0;
       uint16_t adcValue = BSP_GetADC();
       uint32_t uvThresValue = 0;
       REG_GetValue(&uvThresValue, REG_ID_UV_LVL);
-  
+      /* Add the ambient light value to UV Threshold value */
+      uvThresValue += AmbientUvValue;
+      
       if(adcValue > uvThresValue)
       {
         UI_MSG_T msg = {0, UIMSG_UVDETECT};
@@ -124,22 +136,7 @@ static uint8_t WaitLastNoteCount = 0;
   }
 }
 
-/**
-  * @brief  Absolute value calculation.
-  * @param  None
-  * @retval None
-  */
-int32_t absolute(int32_t value) 
-{
-  if (value < 0) 
-	{
-    return -value;
-  }
-  else 
-	{
-    return value;  
-  }
-}
+
 
 /**
   * @brief  Main program.
@@ -152,6 +149,8 @@ void main(void)
 
   /* BSP Initialization -----------------------------------------*/
   BSP_Init();
+  /* Power DElay 1.5 Seconds */
+  BSP_DelayMs(1500);
   DISP_Init();
   TURR_Clear();
 
@@ -175,7 +174,6 @@ void main(void)
   {
     static uint32_t BkupDispExecTime = 0;
     static uint32_t BkupKpdScanTime = 0;
-    static uint32_t BkupTurrExecTime = 0;
     static uint32_t BkupBuzzExecTime = 0;
     static uint32_t BkupRetExecTime = 0;
     static uint32_t BkupSnrExecTime = 0;
@@ -205,18 +203,7 @@ void main(void)
       BkupBuzzExecTime = sysTime;
       BSP_BuzzerExec();
     }
-  
-    if(ADC2_GetFlagStatus())
-    {
-      BSP_AdcExec();
-    }
-
-    if((sysTime - BkupRetExecTime) >= RET_EXEC_MS)
-    {
-      BkupRetExecTime = sysTime;
-      RET_Exec();
-    }
-    
+	   
     if((sysTime - BkupSnrExecTime) >= SNR_EXEC_MS)
     {
       BkupSnrExecTime = sysTime;
@@ -236,6 +223,39 @@ void main(void)
   }
 }
 
+/**
+  * @brief Retargets the C library printf function to the UART.
+  * @param c Character to send
+  * @retval char Character sent
+  */
+PUTCHAR_PROTOTYPE
+{
+  /* Write a character to the UART1 */
+  UART1_SendData8(c);
+  /* Loop until the end of transmission */
+  while (UART1_GetFlagStatus(UART1_FLAG_TXE) == RESET);
+
+  return (c);
+}
+
+/**
+  * @brief Retargets the C library scanf function to the USART.
+  * @param None
+  * @retval char Character to Read
+  */
+GETCHAR_PROTOTYPE
+{
+#ifdef _COSMIC_
+  char c = 0;
+#else
+  int c = 0;
+#endif
+  /* Loop until the Read data register flag is SET */
+  while (UART1_GetFlagStatus(UART1_FLAG_RXNE) == RESET);
+    c = UART1_ReceiveData8();
+  return (c);
+}
+
 #ifdef USE_FULL_ASSERT
 
 /**
@@ -245,8 +265,8 @@ void main(void)
   * @param line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line)
-{
+void assert_failed(uint8_t* file, uint32_t line)
+{ 
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 

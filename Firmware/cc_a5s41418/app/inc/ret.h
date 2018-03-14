@@ -22,7 +22,6 @@
 #define RET_REG_DATA_SIZE          (64)
 
 void RET_Init(void);
-void RET_ClearMemory(void);
 void RET_WriteMem(uint8_t idx, uint32_t *pData);
 void RET_ReadMem(uint8_t idx, uint32_t *pData);
 void RET_UpdateFlash(void);

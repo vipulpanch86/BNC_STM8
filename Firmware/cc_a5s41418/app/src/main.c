@@ -271,15 +271,9 @@ void assert_failed(uint8_t* file, uint32_t line)
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
   /* Infinite loop */
-  while (1)
+  while(1)
   {
   }
 }
 #endif
-
-/**
-  * @}
-  */
-
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/***********************END OF FILE************************/
