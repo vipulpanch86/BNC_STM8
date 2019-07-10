@@ -25,38 +25,38 @@
 #define BSP_SW_VERSION      100
 
 /* Board I/Os configuration */
-#define DISP_DB0_PORT (GPIOC)
-#define DISP_DB0_PIN  (GPIO_PIN_7)
+#define DISP_DB0_PORT (GPIOD)
+#define DISP_DB0_PIN  (GPIO_PIN_3)
 
-#define DISP_DB1_PORT (GPIOC)
-#define DISP_DB1_PIN  (GPIO_PIN_6)
+#define DISP_DB1_PORT (GPIOD)
+#define DISP_DB1_PIN  (GPIO_PIN_2)
 
 #define DISP_DB2_PORT (GPIOC)
-#define DISP_DB2_PIN  (GPIO_PIN_5)
+#define DISP_DB2_PIN  (GPIO_PIN_7)
 
 #define DISP_DB3_PORT (GPIOC)
-#define DISP_DB3_PIN  (GPIO_PIN_4)
+#define DISP_DB3_PIN  (GPIO_PIN_6)
 
 #define DISP_DB4_PORT (GPIOC)
-#define DISP_DB4_PIN  (GPIO_PIN_3)
+#define DISP_DB4_PIN  (GPIO_PIN_5)
 
-#define DISP_DB5_PORT (GPIOB)
+#define DISP_DB5_PORT (GPIOC)
 #define DISP_DB5_PIN  (GPIO_PIN_4)
 
-#define DISP_DB6_PORT (GPIOB)
-#define DISP_DB6_PIN  (GPIO_PIN_5)
+#define DISP_DB6_PORT (GPIOC)
+#define DISP_DB6_PIN  (GPIO_PIN_3)
 
-#define DISP_EN0_PORT (GPIOD)
-#define DISP_EN0_PIN  (GPIO_PIN_4)
+#define DISP_EN0_PORT (GPIOA)
+#define DISP_EN0_PIN  (GPIO_PIN_2)
 
-#define DISP_EN1_PORT (GPIOD)
-#define DISP_EN1_PIN  (GPIO_PIN_5)
+#define DISP_EN1_PORT (GPIOA)
+#define DISP_EN1_PIN  (GPIO_PIN_1)
 
 #define DISP_EN2_PORT (GPIOD)
-#define DISP_EN2_PIN  (GPIO_PIN_2)
+#define DISP_EN2_PIN  (GPIO_PIN_5)
 
 #define DISP_EN3_PORT (GPIOD)
-#define DISP_EN3_PIN  (GPIO_PIN_3)
+#define DISP_EN3_PIN  (GPIO_PIN_4)
 
 extern __IO uint32_t SystemTimer;
 
